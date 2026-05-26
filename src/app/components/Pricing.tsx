@@ -7,37 +7,19 @@ import { Check } from "lucide-react";
 const spheres = "/img/pheres.png";
 const plans = [
   {
-    name: "Starter",
-    price: "₦27,999",
-    period: "/month",
-    tag: null,
-    desc: "Perfect for small businesses just getting started with WhatsApp automation.",
-    features: [
-      "1 WhatsApp Business number",
-      "AI chatbot (up to 500 msgs/day)",
-      "Basic FAQ automation",
-      "Lead capture flow",
-      "WhatsApp CRM sync",
-      "Email support",
-    ],
-    cta: "Get started",
-    highlight: false,
-  },
-  {
-    name: "Growth",
-    price: "₦89,999",
-    period: "/month",
+    name: "Business",
+    price: "₦30,000",
+    period: "/setup + ₦15,000/month",
     tag: "Most Popular",
-    desc: "For growing businesses that need more automation and integrations.",
+    desc: "Full setup + managed automation for growing businesses.",
     features: [
-      "2 WhatsApp Business numbers",
-      "AI chatbot (up to 3,000 msgs/day)",
-      "Full FAQ + support automation",
-      "Lead qualification & routing",
-      "CRM, Sheets & Zapier integration",
-      "Broadcast campaigns (up to 5,000)",
-      "Priority WhatsApp support",
-      "Monthly performance report",
+      "Everything in Starter",
+      "Custom AI workflow setup",
+      "CRM / Sheets integration",
+      "Lead qualification automation",
+      "Broadcast messaging",
+      "Priority support",
+      "Meta API integration setup",
     ],
     cta: "Get started",
     highlight: true,
@@ -47,16 +29,14 @@ const plans = [
     price: "Custom",
     period: "",
     tag: "Scale",
-    desc: "Built for large teams and enterprises with complex, high-volume workflows.",
+    desc: "Advanced automation for high-volume businesses.",
     features: [
-      "Unlimited WhatsApp numbers",
-      "Unlimited AI messages",
-      "Custom workflow design",
-      "Full API & ERP integrations",
-      "Multi-agent inbox management",
-      "Unlimited broadcasts",
-      "Dedicated account manager",
-      "SLA-backed support",
+      "Multiple WhatsApp numbers",
+      "Advanced workflows",
+      "ERP / API integrations",
+      "Multi-agent inbox",
+      "Dedicated support",
+      "SLA-backed uptime",
     ],
     cta: "Talk to us",
     highlight: false,
@@ -104,7 +84,7 @@ export function Pricing() {
           </motion.p>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-5 items-stretch">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-5 items-stretch">
           {plans.map(({ name, price, period, tag, desc, features, cta, highlight }, i) => (
             <motion.article
               key={name}
