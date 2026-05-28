@@ -1,12 +1,41 @@
 import { useState, useRef } from "react";
 import { motion, useInView } from "motion/react";
-import { Mail, Phone, MapPin, Clock, ArrowRight, CheckCircle2, MessageSquare, Loader2 } from "lucide-react";
+import {
+  Mail,
+  Phone,
+  MapPin,
+  Clock,
+  ArrowRight,
+  CheckCircle2,
+  MessageSquare,
+  Loader2,
+} from "lucide-react";
 
 const info = [
-  { Icon: Mail, label: "Email Us", value: "automatenig@gmail.com", href: "mailto:automatenig@gmail.com" },
-  { Icon: Phone, label: "Call Us", value: "+234 812 167 6394", href: "tel:+2348121676394" },
-  { Icon: MapPin, label: "Location", value: "Ikot Ekpene, Akwa Ibom, Nigeria", href: null },
-  { Icon: Clock, label: "Business Hours", value: "Mon–Sat, 9am–6pm WAT", href: null },
+  {
+    Icon: Mail,
+    label: "Email Us",
+    value: "automatenig@gmail.com",
+    href: "mailto:automatenig@gmail.com",
+  },
+  {
+    Icon: Phone,
+    label: "Call Us",
+    value: "+234 812 167 6394",
+    href: "tel:+2348121676394",
+  },
+  {
+    Icon: MapPin,
+    label: "Location",
+    value: "Ikot Ekpene, Akwa Ibom, Nigeria",
+    href: null,
+  },
+  {
+    Icon: Clock,
+    label: "Business Hours",
+    value: "Mon–Sat, 9am–6pm WAT",
+    href: null,
+  },
 ];
 
 export function Contact() {
@@ -19,7 +48,7 @@ export function Contact() {
   const [loading, setLoading] = useState(false);
   const [submitted, setSubmitted] = useState(false);
   const [focused, setFocused] = useState<string | null>(null);
-  
+
   const ref = useRef<HTMLDivElement>(null);
   const inView = useInView(ref, { once: true, margin: "-60px" });
 
@@ -29,26 +58,33 @@ export function Contact() {
 
     if (method === "whatsapp") {
       // Standard WhatsApp Logic
-      const t = encodeURIComponent(`Hello, I found you online.\n\nName: ${name}\nPhone: ${phone}\n\nMessage: ${message}`);
+      const t = encodeURIComponent(
+        `Hello, I found you online.\n\nName: ${name}\nPhone: ${phone}\n\nMessage: ${message}`,
+      );
       window.open(`https://wa.me/2348121676394?text=${t}`, "_blank");
     } else {
       // AI Email Webhook Logic
       setLoading(true);
       try {
-        const response = await fetch("https://ai-message-be-service.vercel.app/email-webhook/", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            name,
-            email,
-            message,
-          }),
-        });
+        const response = await fetch(
+          "https://ai-message-be-service.vercel.app/email-webhook/",
+          {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              name,
+              email,
+              message,
+            }),
+          },
+        );
 
         if (response.ok) {
           setSubmitted(true);
           // Reset form after success
-          setName(""); setEmail(""); setMessage("");
+          setName("");
+          setEmail("");
+          setMessage("");
         }
       } catch (error) {
         console.error("Email submission failed", error);
@@ -59,7 +95,10 @@ export function Contact() {
   };
 
   return (
-    <section id="contact" className="relative bg-[#050505] py-[80px] md:py-[140px] px-[20px] md:px-[40px] overflow-hidden">
+    <section
+      id="contact"
+      className="relative bg-[#050505] py-[80px] md:py-[140px] px-[20px] md:px-[40px] overflow-hidden"
+    >
       {/* Background ambient lighting */}
       <div className="absolute top-0 left-0 w-full h-full overflow-hidden pointer-events-none">
         <div className="absolute top-[-20%] right-[-10%] w-[600px] h-[600px] bg-[#25D366] opacity-[0.03] blur-[150px] rounded-full" />
@@ -70,37 +109,40 @@ export function Contact() {
       <div className="max-w-[1200px] mx-auto relative z-10" ref={ref}>
         {/* Header Section */}
         <div className="flex flex-col items-center text-center gap-[16px] mb-[64px] md:mb-[80px]">
-          <motion.div 
+          <motion.div
             initial={{ opacity: 0, scale: 0.9 }}
             animate={inView ? { opacity: 1, scale: 1 } : {}}
             transition={{ duration: 0.5 }}
             className="inline-flex items-center gap-[8px] px-[16px] py-[6px] rounded-full bg-[#1a1a1a] border border-[#262626]"
           >
             <div className="w-[8px] h-[8px] rounded-full bg-[#25D366] animate-pulse" />
-            <span className="font-['Inter'] font-medium text-[#a5a5a5] text-[12px] tracking-[1.5px] uppercase">READY TO AUTOMATE?</span>
+            <span className="font-['Inter'] font-medium text-[#a5a5a5] text-[12px] tracking-[1.5px] uppercase">
+              READY TO AUTOMATE?
+            </span>
           </motion.div>
-          
+
           <motion.h2
             initial={{ opacity: 0, y: 20 }}
             animate={inView ? { opacity: 1, y: 0 } : {}}
             transition={{ delay: 0.1, duration: 0.6 }}
             className="text-white font-['Poppins'] font-normal text-[40px] md:text-[56px] leading-[1.1] tracking-[-0.04em] max-w-[700px]"
           >
-            Let's build your <span className="text-[#32cd87]">growth engine</span> together.
+            Let's build your{" "}
+            <span className="text-[#32cd87]">growth engine</span> together.
           </motion.h2>
-          
+
           <motion.p
             initial={{ opacity: 0, y: 20 }}
             animate={inView ? { opacity: 1, y: 0 } : {}}
             transition={{ delay: 0.2, duration: 0.6 }}
             className="text-[#888] font-['Poppins'] text-[16px] md:text-[18px] max-w-[600px] leading-[1.6]"
           >
-            Whether you need a custom AI chatbot or a full-scale workflow automation system, our team is ready to deliver.
+            Whether you need a custom AI chatbot or a full-scale workflow
+            automation system, our team is ready to deliver.
           </motion.p>
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-[1fr_1.2fr] gap-[32px] md:gap-[48px] items-start relative">
-          
           {/* Left Column: Contact Info Cards */}
           <div className="flex flex-col gap-[16px]">
             {info.map(({ Icon, label, value, href }, i) => (
@@ -108,19 +150,27 @@ export function Contact() {
                 key={label}
                 initial={{ opacity: 0, x: -30 }}
                 animate={inView ? { opacity: 1, x: 0 } : {}}
-                transition={{ delay: 0.3 + (i * 0.1), duration: 0.5 }}
+                transition={{ delay: 0.3 + i * 0.1, duration: 0.5 }}
                 className="group relative bg-[#0a0a0a] border border-[#1e1e1e] hover:border-[#32cd87]/40 rounded-[20px] p-[24px] overflow-hidden transition-colors duration-500"
               >
                 <div className="absolute inset-0 bg-gradient-to-r from-[#112419] to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none" />
-                
+
                 <div className="relative z-10 flex items-center gap-[20px]">
                   <div className="w-[56px] h-[56px] rounded-[16px] bg-[#141414] border border-[#262626] flex items-center justify-center shrink-0 group-hover:scale-110 group-hover:bg-[#1a2f22] group-hover:border-[#32cd87]/50 transition-all duration-500">
-                    <Icon size={22} className="text-[#888] group-hover:text-[#32cd87] transition-colors duration-500" />
+                    <Icon
+                      size={22}
+                      className="text-[#888] group-hover:text-[#32cd87] transition-colors duration-500"
+                    />
                   </div>
                   <div className="flex flex-col gap-[4px]">
-                    <span className="font-['Inter'] text-[#888] text-[13px] tracking-[0.5px] uppercase">{label}</span>
+                    <span className="font-['Inter'] text-[#888] text-[13px] tracking-[0.5px] uppercase">
+                      {label}
+                    </span>
                     {href ? (
-                      <a href={href} className="font-['Poppins'] text-white text-[16px] md:text-[18px] hover:text-[#32cd87] transition-colors duration-300">
+                      <a
+                        href={href}
+                        className="font-['Poppins'] text-white text-[16px] md:text-[18px] hover:text-[#32cd87] transition-colors duration-300"
+                      >
                         {value}
                       </a>
                     ) : (
@@ -146,11 +196,20 @@ export function Contact() {
               <div className="absolute top-0 right-0 w-[150px] h-[150px] bg-white opacity-20 blur-[50px] group-hover:scale-150 transition-transform duration-700" />
               <div className="relative z-10 flex items-center justify-between">
                 <div className="flex flex-col gap-[4px]">
-                  <span className="font-['Poppins'] font-semibold text-[#0f3f22] text-[20px] md:text-[24px] leading-[1.2]">Chat directly</span>
-                  <span className="font-['Poppins'] text-[#11502a] text-[15px]">We usually reply in minutes.</span>
+                  <span className="font-['Poppins'] font-semibold text-[#0f3f22] text-[20px] md:text-[24px] leading-[1.2]">
+                    Chat directly
+                  </span>
+                  <span className="font-['Poppins'] text-[#11502a] text-[15px]">
+                    We usually reply in minutes.
+                  </span>
                 </div>
                 <div className="w-[48px] h-[48px] rounded-full bg-white flex items-center justify-center group-hover:rotate-12 group-hover:scale-110 transition-transform duration-500 shadow-[0_10px_20px_rgba(0,0,0,0.1)]">
-                  <svg width="24" height="24" viewBox="0 0 24 24" fill="#25D366">
+                  <svg
+                    width="24"
+                    height="24"
+                    viewBox="0 0 24 24"
+                    fill="#25D366"
+                  >
                     <path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z" />
                   </svg>
                 </div>
@@ -166,14 +225,14 @@ export function Contact() {
             className="bg-[#0a0a0a] border border-[#1e1e1e] rounded-[24px] p-[24px] md:p-[40px] relative overflow-hidden shadow-[0_30px_60px_-20px_rgba(0,0,0,0.5)]"
           >
             <div className="absolute top-0 left-0 w-full h-[2px] bg-gradient-to-r from-transparent via-[#32cd87] to-transparent opacity-20" />
-            
+
             <div className="mb-[32px]">
               <h3 className="text-white font-['Poppins'] font-medium text-[24px] md:text-[28px] leading-[1.2] mb-[8px]">
                 {submitted ? "Message Received!" : "Send a Message"}
               </h3>
               <p className="text-[#888] font-['Poppins'] text-[15px]">
-                {submitted 
-                  ? "Zira is processing your email and will reply shortly. Check your inbox!" 
+                {submitted
+                  ? "Zira is processing your email and will reply shortly. Check your inbox!"
                   : "Choose your delivery method and Zira will assist you instantly."}
               </p>
             </div>
@@ -181,17 +240,12 @@ export function Contact() {
             {/* --- METHOD SWITCHER --- */}
             {!submitted && (
               <div className="flex gap-2 p-1 bg-[#141414] rounded-[16px] border border-[#262626] mb-8">
-                {/* <button
-                  onClick={() => setMethod("whatsapp")}
-                  className={`flex-1 flex items-center justify-center gap-2 py-2 rounded-[12px] transition-all ${method === 'whatsapp' ? 'bg-[#25D366] text-black font-semibold' : 'text-[#888] hover:text-white'}`}
-                >
-                  <MessageSquare size={16} /> <span className="text-[13px]">WhatsApp</span>
-                </button> */}
                 <button
                   onClick={() => setMethod("email")}
-                  className={`flex-1 flex items-center justify-center gap-2 py-2 rounded-[12px] transition-all ${method === 'email' ? 'bg-[#32cd87] text-black font-semibold' : 'text-[#888] hover:text-white'}`}
+                  className={`flex-1 flex items-center justify-center gap-2 py-2 rounded-[12px] transition-all ${method === "email" ? "bg-[#32cd87] text-black font-semibold" : "text-[#888] hover:text-white"}`}
                 >
-                  <Mail size={16} /> <span className="text-[13px]">Email AI</span>
+                  <Mail size={16} />{" "}
+                  <span className="text-[13px]">Email AI</span>
                 </button>
               </div>
             )}
@@ -200,14 +254,18 @@ export function Contact() {
               <form onSubmit={submit} className="flex flex-col gap-[24px]">
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-[24px]">
                   <div className="flex flex-col gap-[8px]">
-                    <label className="text-[#a5a5a5] font-['Inter'] text-[13px]">Full Name <span className="text-[#32cd87]">*</span></label>
-                    <div className={`relative rounded-[14px] bg-[#141414] border transition-all duration-300 ${focused === 'name' ? 'border-[#32cd87]/60 shadow-[0_0_15px_rgba(37,211,102,0.1)]' : 'border-[#262626] hover:border-[#333]'}`}>
+                    <label className="text-[#a5a5a5] font-['Inter'] text-[13px]">
+                      Full Name <span className="text-[#32cd87]">*</span>
+                    </label>
+                    <div
+                      className={`relative rounded-[14px] bg-[#141414] border transition-all duration-300 ${focused === "name" ? "border-[#32cd87]/60 shadow-[0_0_15px_rgba(37,211,102,0.1)]" : "border-[#262626] hover:border-[#333]"}`}
+                    >
                       <input
                         type="text"
                         required
                         placeholder="John Doe"
                         value={name}
-                        onFocus={() => setFocused('name')}
+                        onFocus={() => setFocused("name")}
                         onBlur={() => setFocused(null)}
                         onChange={(e) => setName(e.target.value)}
                         className="w-full bg-transparent px-[16px] py-[14px] text-white font-['Poppins'] text-[15px] outline-none placeholder:text-[#555]"
@@ -217,17 +275,19 @@ export function Contact() {
 
                   <div className="flex flex-col gap-[8px]">
                     <label className="text-[#a5a5a5] font-['Inter'] text-[13px]">
-                      {method === 'whatsapp' ? 'Phone Number' : 'Email Address'} <span className="text-[#32cd87]">*</span>
+                      Email Address <span className="text-[#32cd87]">*</span>
                     </label>
-                    <div className={`relative rounded-[14px] bg-[#141414] border transition-all duration-300 ${focused === 'contact_info' ? 'border-[#32cd87]/60 shadow-[0_0_15px_rgba(37,211,102,0.1)]' : 'border-[#262626] hover:border-[#333]'}`}>
+                    <div
+                      className={`relative rounded-[14px] bg-[#141414] border transition-all duration-300 ${focused === "contact_info" ? "border-[#32cd87]/60 shadow-[0_0_15px_rgba(37,211,102,0.1)]" : "border-[#262626] hover:border-[#333]"}`}
+                    >
                       <input
-                        type={method === 'whatsapp' ? "tel" : "email"}
+                        type="email"
                         required
-                        placeholder={method === 'whatsapp' ? "+234 800 000 0000" : "john@example.com"}
-                        value={method === 'whatsapp' ? phone : email}
-                        onFocus={() => setFocused('contact_info')}
+                        placeholder="john@example.com"
+                        value={email}
+                        onFocus={() => setFocused("contact_info")}
                         onBlur={() => setFocused(null)}
-                        onChange={(e) => method === 'whatsapp' ? setPhone(e.target.value) : setEmail(e.target.value)}
+                        onChange={(e) => setEmail(e.target.value)}
                         className="w-full bg-transparent px-[16px] py-[14px] text-white font-['Poppins'] text-[15px] outline-none placeholder:text-[#555]"
                       />
                     </div>
@@ -235,13 +295,17 @@ export function Contact() {
                 </div>
 
                 <div className="flex flex-col gap-[8px]">
-                  <label className="text-[#a5a5a5] font-['Inter'] text-[13px]">Project Details <span className="text-[#32cd87]">*</span></label>
-                  <div className={`relative rounded-[14px] bg-[#141414] border transition-all duration-300 ${focused === 'message' ? 'border-[#32cd87]/60 shadow-[0_0_15px_rgba(37,211,102,0.1)]' : 'border-[#262626] hover:border-[#333]'}`}>
+                  <label className="text-[#a5a5a5] font-['Inter'] text-[13px]">
+                    Project Details <span className="text-[#32cd87]">*</span>
+                  </label>
+                  <div
+                    className={`relative rounded-[14px] bg-[#141414] border transition-all duration-300 ${focused === "message" ? "border-[#32cd87]/60 shadow-[0_0_15px_rgba(37,211,102,0.1)]" : "border-[#262626] hover:border-[#333]"}`}
+                  >
                     <textarea
                       required
                       placeholder="Tell us about your current workflow and what you'd like to automate..."
                       value={message}
-                      onFocus={() => setFocused('message')}
+                      onFocus={() => setFocused("message")}
                       onBlur={() => setFocused(null)}
                       onChange={(e) => setMessage(e.target.value)}
                       rows={4}
@@ -255,29 +319,51 @@ export function Contact() {
                   disabled={loading}
                   whileHover={{ scale: 1.01 }}
                   whileTap={{ scale: 0.98 }}
-                  className={`mt-[8px] group relative w-full ${method === 'whatsapp' ? 'bg-white text-black' : 'bg-[#32cd87] text-black'} py-[16px] rounded-[14px] flex items-center justify-center gap-[12px] overflow-hidden`}
+                  className="mt-[8px] group relative w-full bg-[#32cd87] text-black py-[16px] rounded-[14px] flex items-center justify-center gap-[12px] overflow-hidden"
                 >
                   <div className="absolute inset-0 bg-gradient-to-r from-[#e0e0e0] to-white opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
                   <span className="relative z-10 font-['Poppins'] font-semibold text-[16px]">
-                    {loading ? "Zira is thinking..." : method === 'whatsapp' ? "Send to WhatsApp" : "Send via Email AI"}
+                    {loading ? "Zira is thinking..." : "Send via Email AI"}
                   </span>
-                  {loading ? <Loader2 size={18} className="animate-spin relative z-10" /> : <ArrowRight size={18} className="relative z-10 group-hover:translate-x-1 transition-transform duration-300" />}
+                  {loading ? (
+                    <Loader2 size={18} className="animate-spin relative z-10" />
+                  ) : (
+                    <ArrowRight
+                      size={18}
+                      className="relative z-10 group-hover:translate-x-1 transition-transform duration-300"
+                    />
+                  )}
                 </motion.button>
-                
+
                 <div className="flex items-center justify-center gap-[8px] mt-[8px]">
                   <CheckCircle2 size={14} className="text-[#32cd87]" />
                   <span className="font-['Inter'] text-[#888] text-[12px]">
-                    {method === 'whatsapp' ? 'No wait times. Instant connection.' : 'Zira usually replies to emails in seconds.'}
+                    Zira usually replies to emails in seconds.
                   </span>
                 </div>
               </form>
             )}
 
             {submitted && (
-              <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="py-12 text-center">
-                 <CheckCircle2 size={48} className="text-[#32cd87] mx-auto mb-4" />
-                 <div className="text-white font-['Poppins']" >The AI has received your message. Please check your email inbox!</div>
-                 <button onClick={() => setSubmitted(false)} className="mt-8 text-[#32cd87] text-sm underline">Send another message</button>
+              <motion.div
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                className="py-12 text-center"
+              >
+                <CheckCircle2
+                  size={48}
+                  className="text-[#32cd87] mx-auto mb-4"
+                />
+                <div className="text-white font-['Poppins']">
+                  The AI has received your message. Please check your email
+                  inbox!
+                </div>
+                <button
+                  onClick={() => setSubmitted(false)}
+                  className="mt-8 text-[#32cd87] text-sm underline"
+                >
+                  Send another message
+                </button>
               </motion.div>
             )}
           </motion.div>
