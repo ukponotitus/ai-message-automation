@@ -1,230 +1,110 @@
-import { motion } from "motion/react";
-// import sphereImg from "../../imports/1920WDefault-2/db218e28ccc24b458fd2b9ef4ca5741c37c2c7c0.png";
-// import sphereImg2 from "../../imports/1920WDefault-2/9d6d507f86b0b324e0b80202be5dbfd93de00c48.png";
+import { motion } from "framer-motion";
 
 const stats = [
-  { value: "24/7", label: "Automated replies" },
-  { value: "<2s", label: "Response time" },
-  { value: "100%", label: "WhatsApp native" },
+  { value: "24/7", label: "Always Active" },
+  { value: "<2s", label: "Response Time" },
+  { value: "10x", label: "Faster Growth" },
 ];
 
 const spheres = "/img/pheres.png";
 
 export function Hero() {
   return (
-    <section className="relative min-h-screen flex items-center justify-center overflow-hidden bg-black px-5 pt-[144px] pb-16">
-      <div className="absolute inset-0 overflow-clip pointer-events-none">
-        {/* Left top sphere */}
-        <div
-          className="absolute blur-[5px] opacity-80"
-          style={{
-            width: 505,
-            height: 505,
-            left: -315,
-            top: "calc(100% - 1224px - 505px)",
-          }}
-        >
-          <img
-            src={spheres}
-            alt=""
-            className="w-full h-full object-cover rounded-full"
-          />
-        </div>
-        {/* Right top large sphere */}
-        <div
-          className="absolute opacity-80"
-          style={{ width: 604, height: 604, right: -171, top: -272 }}
-        >
-          <img
-            src={spheres}
-            alt=""
-            className="w-full h-full object-cover rounded-full"
-          />
-        </div>
+    <section className="relative flex items-center justify-center overflow-hidden bg-[#050505] px-5 pt-[80px] pb-16">
+      {/* Background Ambient Glows */}
+      <div className="absolute inset-0 overflow-hidden pointer-events-none">
+        <div className="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] bg-[#25D366] opacity-[0.08] blur-[120px] rounded-full" />
+        <div className="absolute bottom-[10%] right-[-5%] w-[30%] h-[30%] bg-[#25D366] opacity-[0.05] blur-[100px] rounded-full" />
       </div>
 
-      <div className="relative z-10 max-w-[1200px] mx-auto w-full flex flex-col items-start gap-6 px-5 sm:px-10">
-        {/* Badge — matches Figma testimonial card position */}
+      <div className="relative z-10 max-w-[1100px] mx-auto w-full flex flex-col items-center text-center gap-8">
+        
+        {/* Animated Badge */}
         <motion.div
-          initial={{ opacity: 0, y: -16 }}
-          animate={{ opacity: 1, y: 0 }}
+          initial={{ opacity: 0, scale: 0.9 }}
+          animate={{ opacity: 1, scale: 1 }}
           transition={{ duration: 0.5 }}
-          className="bg-[#141414] border border-[#1e1e1e] rounded-[24px] px-4 py-2 flex items-center gap-3 self-start"
+          className="bg-[#111] border border-[#222] rounded-full px-4 py-1.5 flex items-center gap-2 mb-4 mt-5"
         >
-          <span className="w-2 h-2 rounded-full bg-[#25D366] animate-pulse" />
-          <span
-            className="text-[#a5a5a5]"
-            style={{
-              fontFamily: "'Poppins',sans-serif",
-              fontWeight: 400,
-              fontSize: "0.9rem",
-            }}
-          >
-            WhatsApp Automation · Nigeria
+          <span className="relative flex h-2 w-2">
+            <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#25D366] opacity-75"></span>
+            <span className="relative inline-flex rounded-full h-2 w-2 bg-[#25D366]"></span>
+          </span>
+          <span className="text-[#888] text-xs font-medium tracking-wider uppercase">
+            The Future of Nigerian Trade
           </span>
         </motion.div>
 
-        {/* Main heading — Figma style: huge, stacked, Poppins 600 */}
-        <div className="flex flex-col">
-          {["Automate,", "Optimize,", "Scale With", "WhatsApp"].map(
-            (word, i) => (
-              <motion.h1
-                key={word}
-                initial={{ opacity: 0, y: 30 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{
-                  delay: 0.1 + i * 0.07,
-                  duration: 0.6,
-                  ease: "easeOut",
-                }}
-                className="text-white leading-none"
-                style={{
-                  fontFamily: "'Poppins',sans-serif",
-                  fontWeight: 500,
-                  fontSize: "clamp(2.8rem, 7vw, 6rem)",
-                  letterSpacing: "-0.05em",
-                }}
-              >
-                {word === "WhatsApp" ? (
-                  <>
-                    <span className="text-[#25D366]">WhatsApp</span> AI
-                  </>
-                ) : (
-                  word
-                )}
-              </motion.h1>
-            ),
-          )}
+        {/* Main Heading — Stronger Hook */}
+        <div className="flex flex-col gap-2">
+            <motion.h1 
+               initial={{ opacity: 0, y: 20 }}
+               animate={{ opacity: 1, y: 0 }}
+               transition={{ duration: 0.7 }}
+               className="text-white font-semibold leading-[1.1] tracking-tight"
+               style={{ fontSize: "clamp(2.5rem, 8vw, 5rem)", fontFamily: "'Poppins', sans-serif" }}
+            >
+              Your Business, <br />
+              <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#25D366] to-[#dcfce7]">
+                On Autopilot.
+              </span>
+            </motion.h1>
         </div>
 
-        {/* Subtitle */}
+        {/* Subtitle — More emotional */}
         <motion.p
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
-          transition={{ delay: 0.42, duration: 0.6 }}
-          className="text-[#a5a5a5] max-w-[560px] leading-[1.6]"
-          style={{
-            fontFamily: "'Poppins',sans-serif",
-            fontWeight: 400,
-            fontSize: "clamp(0.95rem, 2vw, 1.1rem)",
-            letterSpacing: "-0.03em",
-          }}
+          transition={{ delay: 0.3, duration: 0.8 }}
+          className="text-[#a5a5a5] max-w-[640px] fz-lg leading-relaxed mx-auto"
+          style={{ fontSize: "clamp(1rem, 2vw, 1.25rem)", fontWeight: 300 }}
         >
-          AI-powered replies, lead handling, and customer support — all running
-          24/7 on WhatsApp without lifting a finger.
+          Stop losing leads to slow replies. Our WhatsApp AI closes sales, 
+          handles support, and qualifies prospects while you sleep.
         </motion.p>
 
-        {/* CTA buttons */}
-        <motion.div
-          initial={{ opacity: 0, y: 16 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.52, duration: 0.55 }}
-          className="flex flex-col sm:flex-row gap-3"
-        >
-          {/* Primary green — Figma "Link - Green" style */}
-          <motion.a
-            href="https://wa.me/2348121676394"
-            target="_blank"
-            rel="noopener noreferrer"
-            whileHover={{ scale: 1.04 }}
-            whileTap={{ scale: 0.97 }}
-            className="relative flex items-center justify-center gap-2 px-[18px] py-[16px] rounded-[14px] text-white"
-            style={{
-              fontFamily: "'Poppins',sans-serif",
-              fontWeight: 500,
-              fontSize: "1rem",
-              background: "#245f37",
-              boxShadow: "0px 20px 17.5px #17230f",
-            }}
-          >
-            <span className="absolute inset-0 rounded-[14px] border-t border-[#037c46] pointer-events-none" />
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="white">
-              <path
-                d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"
-                fill="white"
-              />
-            </svg>
-            Chat on WhatsApp
-          </motion.a>
-
-          {/* Secondary — Figma "Link - Secondary" style */}
-          {/* <motion.a
-            href="mailto:automatenig@gmail.com"
-            whileHover={{ scale: 1.03 }}
-            whileTap={{ scale: 0.97 }}
-            className="relative flex items-center justify-center gap-2 bg-[#262626] px-5 py-[16px] rounded-[14px] text-white"
-            style={{ fontFamily: "'Poppins',sans-serif", fontWeight: 500, fontSize: "1rem" }}
-          >
-            <span className="absolute inset-0 rounded-[14px] border-t border-[#424242] pointer-events-none" />
-            Email coming soon
-          </motion.a> */}
-          <motion.button
-            disabled
-            className="relative flex items-center justify-center gap-2 bg-[#1f1f1f] px-5 py-[16px] rounded-[14px] text-[#666] cursor-not-allowed opacity-60"
-            style={{
-              fontFamily: "'Poppins',sans-serif",
-              fontWeight: 500,
-              fontSize: "1rem",
-            }}
-          >
-            <span className="absolute inset-0 rounded-[14px] border-t border-[#2f2f2f] pointer-events-none" />
-            Email coming soon
-          </motion.button>
-        </motion.div>
-
-        {/* Stats row */}
+        {/* CTA Buttons — Higher Contrast */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.64, duration: 0.55 }}
-          className="grid grid-cols-3 gap-3 w-full max-w-[460px]"
+          transition={{ delay: 0.5 }}
+          className="flex flex-col sm:flex-row gap-4 mt-4"
         >
-          {stats.map((s, i) => (
-            <motion.div
-              key={s.value}
-              initial={{ opacity: 0, y: 14 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.72 + i * 0.08 }}
-              whileHover={{ borderColor: "rgba(37,211,102,0.5)" }}
-              className="bg-[#141414] border border-[#1e1e1e] rounded-[16px] p-4 flex flex-col items-center gap-1 transition-colors duration-200"
-            >
-              <span
-                style={{
-                  fontFamily: "'Poppins',sans-serif",
-                  fontWeight: 700,
-                  fontSize: "clamp(1.3rem,4vw,1.7rem)",
-                  color: "#25D366",
-                }}
-              >
-                {s.value}
-              </span>
-              <span
-                className="text-[#a5a5a5] text-center leading-tight"
-                style={{
-                  fontFamily: "'Inter',sans-serif",
-                  fontSize: "0.68rem",
-                }}
-              >
-                {s.label}
-              </span>
-            </motion.div>
+          <motion.a
+            href="https://wa.me/2348121676394"
+            target="_blank"
+            whileHover={{ scale: 1.05, boxShadow: "0 0 20px rgba(37, 211, 102, 0.2)" }}
+            whileTap={{ scale: 0.95 }}
+            className="flex items-center justify-center gap-3 px-8 py-4 rounded-2xl text-[#050505] bg-[#25D366] font-bold text-lg shadow-lg"
+          >
+            Get Started Now
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+              <path d="M5 12h14m-7-7 7 7-7 7" />
+            </svg>
+          </motion.a>
+
+          <motion.button
+            className="px-8 py-4 rounded-2xl text-white bg-transparent border border-[#333] font-medium text-lg hover:bg-white/5 transition-colors"
+          >
+            See Live Demo
+          </motion.button>
+        </motion.div>
+
+        {/* Stats Row — Glassmorphism style */}
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ delay: 0.8 }}
+          className="grid grid-cols-3 gap-6 w-full max-w-[600px] mt-12 pt-12 border-t border-white/5"
+        >
+          {stats.map((s) => (
+            <div key={s.label} className="flex flex-col gap-1">
+              <span className="text-white text-2xl md:text-3xl font-bold tracking-tight">{s.value}</span>
+              <span className="text-[#666] text-xs md:text-sm uppercase tracking-widest">{s.label}</span>
+            </div>
           ))}
         </motion.div>
 
-        {/* Trusted by strip */}
-        {/* <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ delay: 0.9, duration: 0.6 }}
-          className="flex items-center gap-3 mt-6"
-        >
-          <span
-            className="text-[#a5a5a5]"
-            style={{ fontFamily: "'Poppins',sans-serif", fontWeight: 500, fontSize: "0.9rem", background: "linear-gradient(90deg,#fff,#a5a5a5)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent" }}
-          >
-            Trusted by 50+ Nigerian businesses
-          </span>
-        </motion.div> */}
       </div>
     </section>
   );
