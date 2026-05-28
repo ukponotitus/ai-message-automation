@@ -6,6 +6,8 @@ import {
   Instagram, 
   Twitter 
 } from "lucide-react";
+import { Link } from "react-router-dom";
+
 
 const footerLinks = [
   // { label: "Terms & Conditions", href: "/terms" },
@@ -60,10 +62,13 @@ export function Footer() {
               LEGAL
             </span>
             {footerLinks.map(({ label, href }) => (
-              <a key={label} href={href}
-                className="font-['Poppins'] font-normal text-[#a5a5a5] text-[16px] leading-[24px] no-underline hover:text-white transition-colors m-0">
-                {label}
-              </a>
+              <Link 
+              key={label} 
+              to={href} // Change 'href' to 'to'
+              className="font-['Poppins'] font-normal text-[#a5a5a5] text-[16px] leading-[24px] no-underline hover:text-white transition-colors m-0"
+            >
+              {label}
+            </Link>
             ))}
           </div>
           
