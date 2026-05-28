@@ -83,11 +83,16 @@ export function Hero() {
             </svg>
           </motion.a>
 
-          <motion.button
-            className="px-8 py-4 rounded-2xl text-white bg-transparent border border-[#333] font-medium text-lg hover:bg-white/5 transition-colors"
-          >
-            See Live Demo
-          </motion.button>
+        <motion.a
+        href="mailto:automatenig@gmail.com"
+        whileHover={{ scale: 1.03 }}
+        whileTap={{ scale: 0.97 }}
+        className="relative flex items-center justify-center gap-2 bg-[#262626] px-5 py-[16px] rounded-[14px] text-white"
+        style={{ fontFamily: "'Poppins',sans-serif", fontWeight: 500, fontSize: "1rem" }}
+      >
+        <span className="absolute inset-0 rounded-[14px] border-t border-[#424242] pointer-events-none" />
+        Email Us
+      </motion.a> 
         </motion.div>
 
         {/* Stats Row — Glassmorphism style */}

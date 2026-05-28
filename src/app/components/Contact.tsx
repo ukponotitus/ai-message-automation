@@ -1,6 +1,6 @@
 import { useState, useRef } from "react";
 import { motion, useInView } from "motion/react";
-import { Mail, Phone, MapPin, Clock, ArrowRight, CheckCircle2 } from "lucide-react";
+import { Mail, Phone, MapPin, Clock, ArrowRight, CheckCircle2, MessageSquare, Loader2 } from "lucide-react";
 
 const info = [
   { Icon: Mail, label: "Email Us", value: "automatenig@gmail.com", href: "mailto:automatenig@gmail.com" },
@@ -10,18 +10,52 @@ const info = [
 ];
 
 export function Contact() {
+  // --- FORM STATE ---
   const [name, setName] = useState("");
   const [phone, setPhone] = useState("");
+  const [email, setEmail] = useState(""); // New email state
   const [message, setMessage] = useState("");
+  const [method, setMethod] = useState<"whatsapp" | "email">("whatsapp"); // Toggle state
+  const [loading, setLoading] = useState(false);
+  const [submitted, setSubmitted] = useState(false);
   const [focused, setFocused] = useState<string | null>(null);
   
   const ref = useRef<HTMLDivElement>(null);
   const inView = useInView(ref, { once: true, margin: "-60px" });
 
-  const submit = (e: React.FormEvent) => {
+  // --- SUBMIT LOGIC ---
+  const submit = async (e: React.FormEvent) => {
     e.preventDefault();
-    const t = encodeURIComponent(`Hello, I found you online.\n\nName: ${name}\nPhone: ${phone}\n\nMessage: ${message}`);
-    window.open(`https://wa.me/2348121676394?text=${t}`, "_blank");
+
+    if (method === "whatsapp") {
+      // Standard WhatsApp Logic
+      const t = encodeURIComponent(`Hello, I found you online.\n\nName: ${name}\nPhone: ${phone}\n\nMessage: ${message}`);
+      window.open(`https://wa.me/2348121676394?text=${t}`, "_blank");
+    } else {
+      // AI Email Webhook Logic
+      setLoading(true);
+      try {
+        const response = await fetch("https://ai-message-be-service.vercel.app/email-webhook/", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            name,
+            email,
+            message,
+          }),
+        });
+
+        if (response.ok) {
+          setSubmitted(true);
+          // Reset form after success
+          setName(""); setEmail(""); setMessage("");
+        }
+      } catch (error) {
+        console.error("Email submission failed", error);
+      } finally {
+        setLoading(false);
+      }
+    }
   };
 
   return (
@@ -135,80 +169,117 @@ export function Contact() {
             
             <div className="mb-[32px]">
               <h3 className="text-white font-['Poppins'] font-medium text-[24px] md:text-[28px] leading-[1.2] mb-[8px]">
-                Send a Message
+                {submitted ? "Message Received!" : "Send a Message"}
               </h3>
               <p className="text-[#888] font-['Poppins'] text-[15px]">
-                Fill out the form below and we'll route it directly to our WhatsApp for an instant response.
+                {submitted 
+                  ? "Zira is processing your email and will reply shortly. Check your inbox!" 
+                  : "Choose your delivery method and Zira will assist you instantly."}
               </p>
             </div>
 
-            <form onSubmit={submit} className="flex flex-col gap-[24px]">
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-[24px]">
-                <div className="flex flex-col gap-[8px]">
-                  <label className="text-[#a5a5a5] font-['Inter'] text-[13px]">Full Name <span className="text-[#32cd87]">*</span></label>
-                  <div className={`relative rounded-[14px] bg-[#141414] border transition-all duration-300 ${focused === 'name' ? 'border-[#32cd87]/60 shadow-[0_0_15px_rgba(37,211,102,0.1)]' : 'border-[#262626] hover:border-[#333]'}`}>
-                    <input
-                      type="text"
-                      required
-                      placeholder="John Doe"
-                      value={name}
-                      onFocus={() => setFocused('name')}
-                      onBlur={() => setFocused(null)}
-                      onChange={(e) => setName(e.target.value)}
-                      className="w-full bg-transparent px-[16px] py-[14px] text-white font-['Poppins'] text-[15px] outline-none placeholder:text-[#555]"
-                    />
+            {/* --- METHOD SWITCHER --- */}
+            {!submitted && (
+              <div className="flex gap-2 p-1 bg-[#141414] rounded-[16px] border border-[#262626] mb-8">
+                {/* <button
+                  onClick={() => setMethod("whatsapp")}
+                  className={`flex-1 flex items-center justify-center gap-2 py-2 rounded-[12px] transition-all ${method === 'whatsapp' ? 'bg-[#25D366] text-black font-semibold' : 'text-[#888] hover:text-white'}`}
+                >
+                  <MessageSquare size={16} /> <span className="text-[13px]">WhatsApp</span>
+                </button> */}
+                <button
+                  onClick={() => setMethod("email")}
+                  className={`flex-1 flex items-center justify-center gap-2 py-2 rounded-[12px] transition-all ${method === 'email' ? 'bg-[#32cd87] text-black font-semibold' : 'text-[#888] hover:text-white'}`}
+                >
+                  <Mail size={16} /> <span className="text-[13px]">Email AI</span>
+                </button>
+              </div>
+            )}
+
+            {!submitted && (
+              <form onSubmit={submit} className="flex flex-col gap-[24px]">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-[24px]">
+                  <div className="flex flex-col gap-[8px]">
+                    <label className="text-[#a5a5a5] font-['Inter'] text-[13px]">Full Name <span className="text-[#32cd87]">*</span></label>
+                    <div className={`relative rounded-[14px] bg-[#141414] border transition-all duration-300 ${focused === 'name' ? 'border-[#32cd87]/60 shadow-[0_0_15px_rgba(37,211,102,0.1)]' : 'border-[#262626] hover:border-[#333]'}`}>
+                      <input
+                        type="text"
+                        required
+                        placeholder="John Doe"
+                        value={name}
+                        onFocus={() => setFocused('name')}
+                        onBlur={() => setFocused(null)}
+                        onChange={(e) => setName(e.target.value)}
+                        className="w-full bg-transparent px-[16px] py-[14px] text-white font-['Poppins'] text-[15px] outline-none placeholder:text-[#555]"
+                      />
+                    </div>
+                  </div>
+
+                  <div className="flex flex-col gap-[8px]">
+                    <label className="text-[#a5a5a5] font-['Inter'] text-[13px]">
+                      {method === 'whatsapp' ? 'Phone Number' : 'Email Address'} <span className="text-[#32cd87]">*</span>
+                    </label>
+                    <div className={`relative rounded-[14px] bg-[#141414] border transition-all duration-300 ${focused === 'contact_info' ? 'border-[#32cd87]/60 shadow-[0_0_15px_rgba(37,211,102,0.1)]' : 'border-[#262626] hover:border-[#333]'}`}>
+                      <input
+                        type={method === 'whatsapp' ? "tel" : "email"}
+                        required
+                        placeholder={method === 'whatsapp' ? "+234 800 000 0000" : "john@example.com"}
+                        value={method === 'whatsapp' ? phone : email}
+                        onFocus={() => setFocused('contact_info')}
+                        onBlur={() => setFocused(null)}
+                        onChange={(e) => method === 'whatsapp' ? setPhone(e.target.value) : setEmail(e.target.value)}
+                        className="w-full bg-transparent px-[16px] py-[14px] text-white font-['Poppins'] text-[15px] outline-none placeholder:text-[#555]"
+                      />
+                    </div>
                   </div>
                 </div>
 
                 <div className="flex flex-col gap-[8px]">
-                  <label className="text-[#a5a5a5] font-['Inter'] text-[13px]">Phone Number <span className="text-[#32cd87]">*</span></label>
-                  <div className={`relative rounded-[14px] bg-[#141414] border transition-all duration-300 ${focused === 'phone' ? 'border-[#32cd87]/60 shadow-[0_0_15px_rgba(37,211,102,0.1)]' : 'border-[#262626] hover:border-[#333]'}`}>
-                    <input
-                      type="tel"
+                  <label className="text-[#a5a5a5] font-['Inter'] text-[13px]">Project Details <span className="text-[#32cd87]">*</span></label>
+                  <div className={`relative rounded-[14px] bg-[#141414] border transition-all duration-300 ${focused === 'message' ? 'border-[#32cd87]/60 shadow-[0_0_15px_rgba(37,211,102,0.1)]' : 'border-[#262626] hover:border-[#333]'}`}>
+                    <textarea
                       required
-                      placeholder="+234 800 000 0000"
-                      value={phone}
-                      onFocus={() => setFocused('phone')}
+                      placeholder="Tell us about your current workflow and what you'd like to automate..."
+                      value={message}
+                      onFocus={() => setFocused('message')}
                       onBlur={() => setFocused(null)}
-                      onChange={(e) => setPhone(e.target.value)}
-                      className="w-full bg-transparent px-[16px] py-[14px] text-white font-['Poppins'] text-[15px] outline-none placeholder:text-[#555]"
+                      onChange={(e) => setMessage(e.target.value)}
+                      rows={4}
+                      className="w-full bg-transparent px-[16px] py-[14px] text-white font-['Poppins'] text-[15px] outline-none placeholder:text-[#555] resize-none"
                     />
                   </div>
                 </div>
-              </div>
 
-              <div className="flex flex-col gap-[8px]">
-                <label className="text-[#a5a5a5] font-['Inter'] text-[13px]">Project Details <span className="text-[#32cd87]">*</span></label>
-                <div className={`relative rounded-[14px] bg-[#141414] border transition-all duration-300 ${focused === 'message' ? 'border-[#32cd87]/60 shadow-[0_0_15px_rgba(37,211,102,0.1)]' : 'border-[#262626] hover:border-[#333]'}`}>
-                  <textarea
-                    required
-                    placeholder="Tell us about your current workflow and what you'd like to automate..."
-                    value={message}
-                    onFocus={() => setFocused('message')}
-                    onBlur={() => setFocused(null)}
-                    onChange={(e) => setMessage(e.target.value)}
-                    rows={4}
-                    className="w-full bg-transparent px-[16px] py-[14px] text-white font-['Poppins'] text-[15px] outline-none placeholder:text-[#555] resize-none"
-                  />
+                <motion.button
+                  type="submit"
+                  disabled={loading}
+                  whileHover={{ scale: 1.01 }}
+                  whileTap={{ scale: 0.98 }}
+                  className={`mt-[8px] group relative w-full ${method === 'whatsapp' ? 'bg-white text-black' : 'bg-[#32cd87] text-black'} py-[16px] rounded-[14px] flex items-center justify-center gap-[12px] overflow-hidden`}
+                >
+                  <div className="absolute inset-0 bg-gradient-to-r from-[#e0e0e0] to-white opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+                  <span className="relative z-10 font-['Poppins'] font-semibold text-[16px]">
+                    {loading ? "Zira is thinking..." : method === 'whatsapp' ? "Send to WhatsApp" : "Send via Email AI"}
+                  </span>
+                  {loading ? <Loader2 size={18} className="animate-spin relative z-10" /> : <ArrowRight size={18} className="relative z-10 group-hover:translate-x-1 transition-transform duration-300" />}
+                </motion.button>
+                
+                <div className="flex items-center justify-center gap-[8px] mt-[8px]">
+                  <CheckCircle2 size={14} className="text-[#32cd87]" />
+                  <span className="font-['Inter'] text-[#888] text-[12px]">
+                    {method === 'whatsapp' ? 'No wait times. Instant connection.' : 'Zira usually replies to emails in seconds.'}
+                  </span>
                 </div>
-              </div>
+              </form>
+            )}
 
-              <motion.button
-                type="submit"
-                whileHover={{ scale: 1.01 }}
-                whileTap={{ scale: 0.98 }}
-                className="mt-[8px] group relative w-full bg-white text-black py-[16px] rounded-[14px] flex items-center justify-center gap-[12px] overflow-hidden"
-              >
-                <div className="absolute inset-0 bg-gradient-to-r from-[#e0e0e0] to-white opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-                <span className="relative z-10 font-['Poppins'] font-semibold text-[16px]">Send directly to WhatsApp</span>
-                <ArrowRight size={18} className="relative z-10 group-hover:translate-x-1 transition-transform duration-300" />
-              </motion.button>
-              
-              <div className="flex items-center justify-center gap-[8px] mt-[8px]">
-                <CheckCircle2 size={14} className="text-[#32cd87]" />
-                <span className="font-['Inter'] text-[#888] text-[12px]">No wait times. 100% secure connection.</span>
-              </div>
-            </form>
+            {submitted && (
+              <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="py-12 text-center">
+                 <CheckCircle2 size={48} className="text-[#32cd87] mx-auto mb-4" />
+                 <div className="text-white font-['Poppins']" >The AI has received your message. Please check your email inbox!</div>
+                 <button onClick={() => setSubmitted(false)} className="mt-8 text-[#32cd87] text-sm underline">Send another message</button>
+              </motion.div>
+            )}
           </motion.div>
         </div>
       </div>
