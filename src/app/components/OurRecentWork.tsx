@@ -8,7 +8,6 @@ const imgEcom = "/CaseStudiesSection/imgEcom.png";
 const imgFinance = "/CaseStudiesSection/imgFinance.png";
 const imgHealthcare = "/CaseStudiesSection/imgHealthcare.png";
 
-
 const caseStudies = [
   {
     tag: "E-Commerce",
@@ -57,15 +56,14 @@ export function OurRecentWork() {
   const inView = useInView(ref, { once: true, margin: "-80px" });
 
   return (
-    <section id="casestudies" className="bg-black py-[112px] px-[40px] flex flex-col items-center relative w-full overflow-hidden">
+    <section id="casestudies" className="bg-white py-[112px] px-[40px] flex flex-col items-center relative w-full overflow-hidden">
       <div className="flex flex-col gap-[64px] max-w-[1120px] w-full">
-        {/* Header */}
         <div ref={ref} className="flex flex-col gap-[23px] items-start w-full">
           <motion.p
             initial={{ opacity: 0 }}
             animate={inView ? { opacity: 1 } : {}}
             transition={{ duration: 0.4 }}
-            className="font-['Inter'] font-medium text-[#32cd87] text-[13.8px] tracking-[2.8px] uppercase m-0"
+            className="font-['Inter'] font-medium text-[#37b24d] text-[13.8px] tracking-[2.8px] uppercase m-0"
           >
             CASE STUDIES
           </motion.p>
@@ -73,13 +71,12 @@ export function OurRecentWork() {
             initial={{ opacity: 0, y: 22 }}
             animate={inView ? { opacity: 1, y: 0 } : {}}
             transition={{ delay: 0.1, duration: 0.55 }}
-            className="font-['Poppins'] font-normal text-[64px] text-white tracking-[-3.2px] leading-[1.2] m-0"
+            className="font-['Poppins'] font-normal text-[64px] text-[#1a1a2e] tracking-[-3.2px] leading-[1.2] m-0"
           >
             Our Recent Work
           </motion.h2>
         </div>
 
-        {/* Grid Container for Case Studies */}
         <div className="flex flex-col gap-[24px] w-full">
           {caseStudies.map((cs, index) => (
             <motion.div
@@ -88,18 +85,17 @@ export function OurRecentWork() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true, margin: "-50px" }}
               transition={{ delay: index * 0.15, duration: 0.6 }}
-              className="bg-[#141414] border border-[#1e1e1e] rounded-[24px] p-[24px] flex flex-col md:flex-row gap-[40px] items-center justify-between w-full group hover:border-[#32cd87]/30 transition-colors duration-500"
+              className="bg-white border border-gray-200 rounded-[24px] p-[24px] flex flex-col md:flex-row gap-[40px] items-center justify-between w-full group hover:border-[#37b24d]/30 transition-colors duration-500 shadow-sm"
             >
-              {/* Left Content */}
               <div className="flex flex-col flex-1 h-full py-[16px] max-w-[500px]">
                 <div className="flex flex-col gap-[16px] mb-[48px]">
-                  <span className="font-['Inter'] font-medium text-[#555555] text-[14px] m-0 capitalize">
+                  <span className="font-['Inter'] font-medium text-[#9ca3af] text-[14px] m-0 capitalize">
                     {cs.tag}
                   </span>
-                  <h3 className="font-['Poppins'] font-normal text-[32px] text-white tracking-[-0.64px] leading-[1.3] m-0">
+                  <h3 className="font-['Poppins'] font-normal text-[32px] text-[#1a1a2e] tracking-[-0.64px] leading-[1.3] m-0">
                     {cs.title}
                   </h3>
-                  <p className="font-['Poppins'] font-normal text-[#a5a5a5] text-[16px] leading-[24px] m-0">
+                  <p className="font-['Poppins'] font-normal text-[#6b7280] text-[16px] leading-[24px] m-0">
                     {cs.desc}
                   </p>
                 </div>
@@ -107,10 +103,10 @@ export function OurRecentWork() {
                 <div className="flex items-start gap-[64px] mt-auto">
                   {cs.metrics.map((metric, i) => (
                     <div key={i} className="flex flex-col gap-[8px]">
-                      <span className="font-['Poppins'] font-normal text-[48px] text-white leading-[1] tracking-[-1.92px] m-0">
+                      <span className="font-['Poppins'] font-normal text-[48px] text-[#37b24d] leading-[1] tracking-[-1.92px] m-0">
                         {metric.val}
                       </span>
-                      <span className="font-['Poppins'] font-normal text-[#555555] text-[14px] leading-[20px] max-w-[120px] m-0">
+                      <span className="font-['Poppins'] font-normal text-[#9ca3af] text-[14px] leading-[20px] max-w-[120px] m-0">
                         {metric.lbl}
                       </span>
                     </div>
@@ -118,7 +114,6 @@ export function OurRecentWork() {
                 </div>
               </div>
 
-              {/* Right Content - Image */}
               <div className="w-full md:w-[50%] h-[380px] rounded-[16px] overflow-hidden relative shrink-0">
                 <ImageWithFallback 
                   src={cs.image} 
@@ -126,16 +121,14 @@ export function OurRecentWork() {
                   className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700 ease-in-out" 
                 />
                 
-                {/* Top Right Arrow Icon Button */}
-                <div className="absolute top-[20px] right-[20px] w-[48px] h-[48px] bg-black/40 backdrop-blur-md rounded-full flex items-center justify-center border border-white/10 group-hover:bg-white group-hover:text-black transition-all duration-300 cursor-pointer">
-                  <ArrowUpRight size={24} className="text-white group-hover:text-black transition-colors" />
+                <div className="absolute top-[20px] right-[20px] w-[48px] h-[48px] bg-white/80 backdrop-blur-md rounded-full flex items-center justify-center border border-gray-200 group-hover:bg-[#37b24d] group-hover:border-[#37b24d] transition-all duration-300 cursor-pointer">
+                  <ArrowUpRight size={24} className="text-[#1a1a2e] group-hover:text-white transition-colors" />
                 </div>
               </div>
             </motion.div>
           ))}
         </div>
 
-        {/* View all CTA */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
@@ -147,7 +140,7 @@ export function OurRecentWork() {
             href="#casestudies"
             whileHover={{ scale: 1.04 }}
             whileTap={{ scale: 0.97 }}
-            className="flex items-center justify-center bg-[#262626] text-[#d6d6d6] px-[24px] py-[16px] rounded-[12px] no-underline hover:text-white transition-colors"
+            className="flex items-center justify-center bg-gray-100 text-[#6b7280] px-[24px] py-[16px] rounded-[12px] no-underline hover:text-[#1a1a2e] hover:bg-gray-200 transition-colors"
           >
             <span className="font-['Poppins'] font-medium text-[16px] leading-[24px] m-0">
               See all Case Studies

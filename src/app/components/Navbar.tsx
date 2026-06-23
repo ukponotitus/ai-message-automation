@@ -1,11 +1,199 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { motion, AnimatePresence } from "motion/react";
-import { Menu, X } from "lucide-react";
-import { useNavigate, useLocation } from "react-router-dom";
+import { Menu, X, ChevronDown, LogOut, Settings, CreditCard, User } from "lucide-react";
+import { useNavigate, useLocation, Link } from "react-router-dom";
+import { useAuth } from "../../context/AuthContext";
+
+const publicNavConfig = [
+  { label: "Features", type: "link" as const, href: "/#Howitworks" },
+  { label: "Pricing", type: "link" as const, href: "/pricing" },
+  { label: "About", type: "link" as const, href: "/about-us" },
+];
+
+const loggedInNavConfig = [
+  { label: "Dashboard", type: "link" as const, href: "/dashboard" },
+  { label: "My AI Assistant", type: "link" as const, href: "/dashboard/ai-assistant" },
+  { label: "Billing", type: "link" as const, href: "/dashboard/billing" },
+];
+
+function NavDropdown({
+  label,
+  items,
+  groups,
+  close,
+}: {
+  label: string;
+  items?: { label: string; href: string }[];
+  groups?: { group: string; links: { label: string; href: string }[] }[];
+  close: () => void;
+}) {
+  const [open, setOpen] = useState(false);
+  const ref = useRef<HTMLDivElement>(null);
+  const navigate = useNavigate();
+  const location = useLocation();
+
+  useEffect(() => {
+    const fn = (e: MouseEvent) => {
+      if (ref.current && !ref.current.contains(e.target as Node)) setOpen(false);
+    };
+    document.addEventListener("mousedown", fn);
+    return () => document.removeEventListener("mousedown", fn);
+  }, []);
+
+  const go = (href: string) => {
+    close();
+    setOpen(false);
+    if (href.startsWith("http")) {
+      window.open(href, "_blank");
+      return;
+    }
+    if (href.startsWith("/#")) {
+      if (location.pathname !== "/") {
+        navigate("/");
+        setTimeout(() => {
+          document.querySelector(href.substring(1))?.scrollIntoView({ behavior: "smooth" });
+        }, 120);
+      } else {
+        document.querySelector(href.substring(1))?.scrollIntoView({ behavior: "smooth" });
+      }
+      return;
+    }
+    navigate(href);
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  };
+
+  return (
+    <div ref={ref} className="relative">
+      <button
+        onClick={() => setOpen(!open)}
+        className="flex items-center gap-1 text-sm text-[#6b7280] hover:text-[#1a1a2e] transition-colors"
+        style={{ fontFamily: "'Inter', sans-serif" }}
+      >
+        {label}
+        <ChevronDown size={14} className={`transition-transform ${open ? "rotate-180" : ""}`} />
+      </button>
+      <AnimatePresence>
+        {open && (
+          <motion.div
+            initial={{ opacity: 0, y: 8, scale: 0.96 }}
+            animate={{ opacity: 1, y: 0, scale: 1 }}
+            exit={{ opacity: 0, y: 8, scale: 0.96 }}
+            transition={{ duration: 0.15 }}
+            className="absolute top-full left-1/2 -translate-x-1/2 mt-2 bg-white border border-gray-200 rounded-2xl shadow-xl p-2 min-w-[200px]"
+          >
+            {items?.map((link) => (
+              <button
+                key={link.label}
+                onClick={() => go(link.href)}
+                className="w-full text-left px-4 py-2.5 text-sm text-[#4b5563] hover:text-[#37b24d] hover:bg-[#f0fdf4] rounded-xl transition-all"
+                style={{ fontFamily: "'Inter', sans-serif" }}
+              >
+                {link.label}
+              </button>
+            ))}
+            {groups?.map((g) => (
+              <div key={g.group}>
+                <div className="px-4 pt-3 pb-1 text-[10px] text-[#9ca3af] uppercase tracking-widest font-semibold" style={{ fontFamily: "'Inter', sans-serif" }}>
+                  {g.group}
+                </div>
+                {g.links.map((link) => (
+                  <button
+                    key={link.label}
+                    onClick={() => go(link.href)}
+                    className="w-full text-left px-4 py-2 text-sm text-[#4b5563] hover:text-[#37b24d] hover:bg-[#f0fdf4] rounded-xl transition-all"
+                    style={{ fontFamily: "'Inter', sans-serif" }}
+                  >
+                    {link.label}
+                  </button>
+                ))}
+              </div>
+            ))}
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </div>
+  );
+}
+
+function ProfileDropdown({ close }: { close: () => void }) {
+  const [open, setOpen] = useState(false);
+  const ref = useRef<HTMLDivElement>(null);
+  const { user, logout, business } = useAuth();
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    const fn = (e: MouseEvent) => {
+      if (ref.current && !ref.current.contains(e.target as Node)) setOpen(false);
+    };
+    document.addEventListener("mousedown", fn);
+    return () => document.removeEventListener("mousedown", fn);
+  }, []);
+
+  const handleLogout = () => {
+    logout();
+    close();
+    setOpen(false);
+    navigate("/");
+  };
+
+  return (
+    <div ref={ref} className="relative">
+      <button
+        onClick={() => setOpen(!open)}
+        className="flex items-center gap-2 text-sm text-[#6b7280] hover:text-[#1a1a2e] transition-colors"
+        style={{ fontFamily: "'Inter', sans-serif" }}
+      >
+        <div className="w-7 h-7 rounded-full bg-[#37b24d]/10 flex items-center justify-center">
+          <User size={14} className="text-[#37b24d]" />
+        </div>
+        <span className="hidden sm:inline">{user?.name || user?.email?.split("@")[0]}</span>
+        <ChevronDown size={14} className={`transition-transform ${open ? "rotate-180" : ""}`} />
+      </button>
+      <AnimatePresence>
+        {open && (
+          <motion.div
+            initial={{ opacity: 0, y: 8, scale: 0.96 }}
+            animate={{ opacity: 1, y: 0, scale: 1 }}
+            exit={{ opacity: 0, y: 8, scale: 0.96 }}
+            transition={{ duration: 0.15 }}
+            className="absolute top-full right-0 mt-2 bg-white border border-gray-200 rounded-2xl shadow-xl p-2 min-w-[200px]"
+          >
+            <div className="px-4 py-2 border-b border-gray-100 mb-1">
+              <p className="text-sm font-medium text-[#1a1a2e] truncate" style={{ fontFamily: "'Inter', sans-serif" }}>{user?.email}</p>
+              {business && <p className="text-xs text-[#9ca3af] truncate" style={{ fontFamily: "'Inter', sans-serif" }}>{business.name}</p>}
+            </div>
+            <button
+              onClick={() => { navigate("/dashboard"); close(); setOpen(false); }}
+              className="w-full text-left px-4 py-2.5 text-sm text-[#4b5563] hover:text-[#37b24d] hover:bg-[#f0fdf4] rounded-xl transition-all flex items-center gap-2"
+              style={{ fontFamily: "'Inter', sans-serif" }}
+            >
+              <Settings size={14} /> Dashboard
+            </button>
+            <button
+              onClick={() => { navigate("/dashboard/billing"); close(); setOpen(false); }}
+              className="w-full text-left px-4 py-2.5 text-sm text-[#4b5563] hover:text-[#37b24d] hover:bg-[#f0fdf4] rounded-xl transition-all flex items-center gap-2"
+              style={{ fontFamily: "'Inter', sans-serif" }}
+            >
+              <CreditCard size={14} /> Billing
+            </button>
+            <button
+              onClick={handleLogout}
+              className="w-full text-left px-4 py-2.5 text-sm text-red-500 hover:bg-red-50 rounded-xl transition-all flex items-center gap-2 mt-1"
+              style={{ fontFamily: "'Inter', sans-serif" }}
+            >
+              <LogOut size={14} /> Logout
+            </button>
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </div>
+  );
+}
 
 export function Navbar() {
   const [scrolled, setScrolled] = useState(false);
   const [open, setOpen] = useState(false);
+  const { user, logout } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
 
@@ -15,120 +203,104 @@ export function Navbar() {
     return () => window.removeEventListener("scroll", fn);
   }, []);
 
-  const links = [
-    { label: "How it works", href: "#Howitworks" },
-    { label: "Services", href: "#services" },
-    { label: "Pricing", href: "#pricing" },
-    { label: "About", href: "/about-us" },
-    { label: "Contact", href: "#contact" },
-  ];
-
   const go = (href: string) => {
     setOpen(false);
-
-    // full-page route (starts with "/" but not a hash)
-    if (href.startsWith("/") && !href.startsWith("/#")) {
-      navigate(href);
-      window.scrollTo({ top: 0, behavior: "smooth" });
+    if (href.startsWith("/#")) {
+      if (location.pathname !== "/") {
+        navigate("/");
+        setTimeout(() => {
+          document.querySelector(href.substring(1))?.scrollIntoView({ behavior: "smooth" });
+        }, 120);
+      } else {
+        document.querySelector(href.substring(1))?.scrollIntoView({ behavior: "smooth" });
+      }
       return;
     }
-
-    // hash anchor
-    if (location.pathname !== "/") {
-      navigate("/");
-      setTimeout(
-        () => document.querySelector(href)?.scrollIntoView({ behavior: "smooth" }),
-        120
-      );
-      return;
-    }
-    document.querySelector(href)?.scrollIntoView({ behavior: "smooth" });
+    navigate(href);
+    window.scrollTo({ top: 0, behavior: "smooth" });
   };
+
+  const isLoggedIn = !!user;
+  const navItems = isLoggedIn ? loggedInNavConfig : publicNavConfig;
 
   return (
     <motion.header
       initial={{ y: -60, opacity: 0 }}
       animate={{ y: 0, opacity: 1 }}
       transition={{ duration: 0.5 }}
-      className={`fixed top-0 inset-x-0 z-50 transition-all duration-300 ${
-        scrolled
-          ? "bg-[rgba(10,10,10,0.9)] backdrop-blur-2xl border-b border-[#1a1a1a]"
-          : ""
-      }`}
+      className="fixed top-0 inset-x-0 z-50 transition-all duration-300 bg-white/90 backdrop-blur-2xl border-b border-gray-200 shadow-sm"
     >
       <div className="max-w-[1200px] mx-auto px-5 sm:px-10 flex items-center justify-between h-[64px]">
-        {/* Logo */}
         <button onClick={() => go("/")} className="flex items-center gap-2.5">
-          <div className="w-[32px] h-[32px] rounded-[10px] bg-[#25D366] flex items-center justify-center">
+          <div className="w-[32px] h-[32px] rounded-[10px] bg-[#37b24d] flex items-center justify-center">
             <svg width="14" height="20" viewBox="0 0 12 20" fill="none">
-              <path
-                d="M0 1.5H12V7.5H6L0 1.5ZM0 7.5H6L12 13.5H6V19.5L0 13.5V7.5Z"
-                fill="black"
-              />
+              <path d="M0 1.5H12V7.5H6L0 1.5ZM0 7.5H6L12 13.5H6V19.5L0 13.5V7.5Z" fill="white" />
             </svg>
           </div>
           <span
             style={{
-              fontFamily: "'Poppins',sans-serif",
-              fontWeight: 600,
+              fontFamily: "'Syne', sans-serif",
+              fontWeight: 700,
               fontSize: "1.55rem",
-              color: "white",
+              color: "#1a1a2e",
               letterSpacing: "-0.02em",
             }}
           >
-            Automate<span className="text-[#25D366]">NG</span>
+            Automate<span className="text-[#37b24d]">NG</span>
           </span>
         </button>
 
-        {/* Desktop links */}
         <nav className="hidden md:flex items-center gap-8">
-          {links.map((l) => (
-            <button
-              key={l.label}
-              onClick={() => go(l.href)}
-              className="text-[#a5a5a5] hover:text-white text-sm transition-colors"
-              style={{
-                fontFamily: "'Poppins',sans-serif",
-                color:
-                  location.pathname === l.href ? "#25D366" : undefined,
-              }}
-            >
-              {l.label}
-            </button>
-          ))}
+          {navItems.map((item) =>
+            item.type === "link" ? (
+              <button
+                key={item.label}
+                onClick={() => go(item.href!)}
+                className="text-sm text-[#6b7280] hover:text-[#1a1a2e] transition-colors"
+                style={{ fontFamily: "'Inter', sans-serif" }}
+              >
+                {item.label}
+              </button>
+            ) : (
+              <NavDropdown
+                key={item.label}
+                label={item.label}
+                items={"links" in item && !("groups" in item) ? item.links : undefined}
+                groups={"groups" in item ? item.groups : undefined}
+                close={() => setOpen(false)}
+              />
+            )
+          )}
+
+          {isLoggedIn ? (
+            <ProfileDropdown close={() => setOpen(false)} />
+          ) : (
+            <>
+              <button
+                onClick={() => go("/signIn")}
+                className="text-sm text-[#6b7280] hover:text-[#1a1a2e] transition-colors"
+                style={{ fontFamily: "'Inter', sans-serif" }}
+              >
+                Sign In
+              </button>
+              <Link
+                to="/signin?redirect=/onboarding"
+                onClick={() => setOpen(false)}
+                className="flex items-center gap-2 bg-[#37b24d] text-white px-5 py-[10px] rounded-[14px] text-sm font-semibold relative"
+                style={{ fontFamily: "'Inter', sans-serif" }}
+              >
+                <span className="absolute inset-0 rounded-[14px] border-t border-[#69db7c] pointer-events-none" />
+                Get Started
+              </Link>
+            </>
+          )}
         </nav>
 
-        {/* CTA */}
-        <motion.a
-          href="https://wa.me/2348121676394"
-          target="_blank"
-          rel="noopener noreferrer"
-          whileHover={{ scale: 1.04 }}
-          whileTap={{ scale: 0.96 }}
-          className="hidden md:flex items-center gap-2 bg-[#25D366] text-black px-5 py-[10px] rounded-[14px] text-sm relative"
-          style={{ fontFamily: "'Poppins',sans-serif", fontWeight: 600 }}
-        >
-          <span className="absolute inset-0 rounded-[14px] border-t border-[#4fff8a] pointer-events-none" />
-          <svg width="15" height="15" viewBox="0 0 24 24" fill="none">
-            <path
-              d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"
-              stroke="black"
-              strokeWidth="2"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              fill="black"
-            />
-          </svg>
-          WhatsApp us
-        </motion.a>
-
-        {/* Mobile toggle */}
-        <button className="md:hidden text-white" onClick={() => setOpen((v) => !v)}>
+        <button className="md:hidden text-[#1a1a2e]" onClick={() => setOpen((v) => !v)}>
           {open ? <X size={22} /> : <Menu size={22} />}
         </button>
       </div>
 
-      {/* Mobile menu */}
       <AnimatePresence>
         {open && (
           <motion.div
@@ -136,31 +308,48 @@ export function Navbar() {
             animate={{ opacity: 1, height: "auto" }}
             exit={{ opacity: 0, height: 0 }}
             transition={{ duration: 0.2 }}
-            className="md:hidden overflow-hidden bg-[rgba(10,10,10,0.98)] backdrop-blur-2xl border-t border-[#1a1a1a]"
+            className="md:hidden overflow-hidden bg-white/98 backdrop-blur-2xl border-t border-gray-200"
           >
             <div className="px-6 py-5 flex flex-col gap-4">
-              {links.map((l) => (
+              {isLoggedIn && user && (
+                <div className="flex items-center gap-3 pb-3 border-b border-gray-100">
+                  <div className="w-9 h-9 rounded-full bg-[#37b24d]/10 flex items-center justify-center">
+                    <User size={16} className="text-[#37b24d]" />
+                  </div>
+                  <div>
+                    <p className="text-sm font-medium text-[#1a1a2e]" style={{ fontFamily: "'Inter', sans-serif" }}>{user.name || user.email}</p>
+                  </div>
+                </div>
+              )}
+
+              {navItems.map((item) => (
                 <button
-                  key={l.label}
-                  onClick={() => go(l.href)}
-                  className="text-left transition-colors"
-                  style={{
-                    fontFamily: "'Poppins',sans-serif",
-                    color: location.pathname === l.href ? "#25D366" : "#a5a5a5",
-                  }}
+                  key={item.label}
+                  onClick={() => go(item.href!)}
+                  className="text-left text-[#1a1a2e] font-semibold text-sm"
+                  style={{ fontFamily: "'Inter', sans-serif" }}
                 >
-                  {l.label}
+                  {item.label}
                 </button>
               ))}
-              <a
-                href="https://wa.me/2348121676394"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="flex items-center justify-center gap-2 bg-[#25D366] text-black py-3 rounded-[14px]"
-                style={{ fontFamily: "'Poppins',sans-serif", fontWeight: 600 }}
-              >
-                WhatsApp us
-              </a>
+
+              {isLoggedIn ? (
+                <button
+                  onClick={() => { logout(); setOpen(false); navigate("/"); }}
+                  className="text-left text-sm text-red-500 font-semibold mt-2"
+                  style={{ fontFamily: "'Inter', sans-serif" }}
+                >
+                  Logout
+                </button>
+              ) : (
+                <a
+                  href="/auth?redirect=/onboarding"
+                  className="flex items-center justify-center gap-2 bg-[#37b24d] text-white py-3 rounded-[14px] font-semibold mt-2"
+                  style={{ fontFamily: "'Inter', sans-serif" }}
+                >
+                  Get Started
+                </a>
+              )}
             </div>
           </motion.div>
         )}

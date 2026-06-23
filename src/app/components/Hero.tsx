@@ -1,115 +1,322 @@
-import { motion } from "framer-motion";
-
-const stats = [
-  { value: "24/7", label: "Always Active" },
-  { value: "<2s", label: "Response Time" },
-  { value: "10x", label: "Faster Growth" },
-];
-
-const spheres = "/img/pheres.png";
+import { motion, AnimatePresence } from "motion/react";
+import { useState, useEffect, useRef } from "react";
+import { Link } from "react-router-dom";
 
 export function Hero() {
+  const [conversation, setConversation] = useState<
+    { type: "user" | "bot"; text: string; id: number }[]
+  >([]);
+  const [isTyping, setIsTyping] = useState(false);
+  const [step, setStep] = useState(0);
+
+  const timeouts = useRef<number[]>([]);
+    const [open, setOpen] = useState(false);
+
+
+  const messages: { type: "user" | "bot"; text: string }[] = [
+    {type:"user", text:"Hi"},
+    { type: "bot", text: "Hi! 👋 How can we help you today?" },
+    { type: "user", text: "Do you have a website where I can see more?" },
+    { type: "bot", text: "Check out our product page!" },
+  ];
+
+  const clearAllTimeouts = () => {
+    timeouts.current.forEach((id) => clearTimeout(id));
+    timeouts.current = [];
+  };
+
+  useEffect(() => {
+    if (step >= messages.length) {
+      const resetTimeout = setTimeout(() => {
+        setConversation([]);
+        setStep(0);
+        setIsTyping(false);
+      }, 2000);
+      timeouts.current.push(resetTimeout);
+      return () => clearTimeout(resetTimeout);
+    }
+
+    const currentMsg = messages[step];
+
+    if (currentMsg.type === "bot") {
+      setIsTyping(true);
+      const typingTimeout = setTimeout(() => {
+        setIsTyping(false);
+        setConversation((prev) => [
+          ...prev,
+          { ...currentMsg, id: Date.now() },
+        ]);
+        setStep(step + 1);
+      }, 1000);
+      timeouts.current.push(typingTimeout);
+      return () => clearTimeout(typingTimeout);
+    } else {
+      const userDelay = setTimeout(() => {
+        setConversation((prev) => [
+          ...prev,
+          { ...currentMsg, id: Date.now() },
+        ]);
+        setStep(step + 1);
+      }, 1500); 
+      timeouts.current.push(userDelay);
+      return () => clearTimeout(userDelay);
+    }
+  }, [step]);
+
+  useEffect(() => {
+    return () => clearAllTimeouts();
+  }, []);
+  
+
   return (
-    <section className="relative flex items-center justify-center overflow-hidden bg-[#050505] px-5 pt-[80px] pb-16">
-      {/* Background Ambient Glows */}
-      <div className="absolute inset-0 overflow-hidden pointer-events-none">
-        <div className="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] bg-[#25D366] opacity-[0.08] blur-[120px] rounded-full" />
-        <div className="absolute bottom-[10%] right-[-5%] w-[30%] h-[30%] bg-[#25D366] opacity-[0.05] blur-[100px] rounded-full" />
-      </div>
+    <section className="relative min-h-[100vh] flex items-center overflow-hidden">
+      <img
+        src="https://images.unsplash.com/photo-1556761175-5973dc0f32e7?auto=format&fit=crop&w=1600&q=80"
+        alt=""
+        aria-hidden="true"
+        className="absolute inset-0 w-full h-full object-cover object-center"
+      />
 
-      <div className="relative z-10 max-w-[1100px] mx-auto w-full flex flex-col items-center text-center gap-8">
-        
-        {/* Animated Badge */}
-        <motion.div
-          initial={{ opacity: 0, scale: 0.9 }}
-          animate={{ opacity: 1, scale: 1 }}
-          transition={{ duration: 0.5 }}
-          className="bg-[#111] border border-[#222] rounded-full px-4 py-1.5 flex items-center gap-2 mb-4 mt-5"
-        >
-          <span className="relative flex h-2 w-2">
-            <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#25D366] opacity-75"></span>
-            <span className="relative inline-flex rounded-full h-2 w-2 bg-[#25D366]"></span>
-          </span>
-          <span className="text-[#888] text-xs font-medium tracking-wider uppercase">
-            The Future of Nigerian Trade
-          </span>
-        </motion.div>
+      <div
+        className="absolute inset-0"
+        style={{
+          background:
+            "linear-gradient(105deg, rgba(10,14,20,0.90) 0%, rgba(10,14,20,0.72) 45%, rgba(10,14,20,0.28) 75%, rgba(10,14,20,0.08) 100%)",
+        }}
+      />
 
-        {/* Main Heading — Stronger Hook */}
-        <div className="flex flex-col gap-2">
-            <motion.h1 
-               initial={{ opacity: 0, y: 20 }}
-               animate={{ opacity: 1, y: 0 }}
-               transition={{ duration: 0.7 }}
-               className="text-white font-semibold leading-[1.1] tracking-tight"
-               style={{ fontSize: "clamp(2.5rem, 8vw, 5rem)", fontFamily: "'Poppins', sans-serif" }}
-            >
-              Your Business, <br />
-              <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#25D366] to-[#dcfce7]">
-                On Autopilot.
-              </span>
-            </motion.h1>
-        </div>
+      <div
+        aria-hidden="true"
+        className="absolute pointer-events-none"
+        style={{
+          top: "25%",
+          left: "-6%",
+          width: "500px",
+          height: "500px",
+          background: "radial-gradient(circle, rgba(55,178,77,0.13) 0%, transparent 70%)",
+          borderRadius: "50%",
+        }}
+      />
 
-        {/* Subtitle — More emotional */}
-        <motion.p
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ delay: 0.3, duration: 0.8 }}
-          className="text-[#a5a5a5] max-w-[640px] fz-lg leading-relaxed mx-auto"
-          style={{ fontSize: "clamp(1rem, 2vw, 1.25rem)", fontWeight: 300 }}
-        >
-          Stop losing leads to slow replies. Our WhatsApp AI closes sales, 
-          handles support, and qualifies prospects while you sleep.
-        </motion.p>
-
-        {/* CTA Buttons — Higher Contrast */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.5 }}
-          className="flex flex-col sm:flex-row gap-4 mt-4"
-        >
-          <motion.a
-            href="https://wa.me/2348121676394"
-            target="_blank"
-            whileHover={{ scale: 1.05, boxShadow: "0 0 20px rgba(37, 211, 102, 0.2)" }}
-            whileTap={{ scale: 0.95 }}
-            className="flex items-center justify-center gap-3 px-8 py-4 rounded-2xl text-[#050505] bg-[#25D366] font-bold text-lg shadow-lg"
-          >
-            Get Started Now
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
-              <path d="M5 12h14m-7-7 7 7-7 7" />
-            </svg>
-          </motion.a>
-
-        <motion.a
-        href="mailto:automatenig@gmail.com"
-        whileHover={{ scale: 1.03 }}
-        whileTap={{ scale: 0.97 }}
-        className="relative flex items-center justify-center gap-2 bg-[#262626] px-5 py-[16px] rounded-[14px] text-white"
-        style={{ fontFamily: "'Poppins',sans-serif", fontWeight: 500, fontSize: "1rem" }}
+      <div className="relative z-10 w-full max-w-7xl mx-auto px-6 md:px-14 pb-20 flex flex-col lg:flex-row lg:items-end gap-12 lg:gap-0">
+<div className="flex-1 flex flex-col justify-between items-start max-w-[600px] py-8">
+  <div className="w-full flex flex-col items-start gap-6">
+    <motion.div
+      initial={{ opacity: 0, y: -10 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.5 }}
+      className="flex items-center gap-2 px-4 py-2 rounded-full"
+      style={{
+        background: "rgba(55,178,77,0.12)",
+        border: "1px solid rgba(55,178,77,0.30)",
+      }}
+    >
+      <span className="w-2 h-2 rounded-full bg-[#37b24d] animate-pulse" />
+      <span
+        className="text-sm font-medium"
+        style={{ color: "#37b24d", fontFamily: "'Poppins',sans-serif" }}
       >
-        <span className="absolute inset-0 rounded-[14px] border-t border-[#424242] pointer-events-none" />
-        Email Us
-      </motion.a> 
-        </motion.div>
+        WhatsApp Automation · Nigeria
+      </span>
+    </motion.div>
 
-        {/* Stats Row — Glassmorphism style */}
+    <motion.h1
+      initial={{ opacity: 0, y: 28 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.75, delay: 0.1 }}
+      style={{
+        fontFamily: "'Poppins',sans-serif",
+        fontWeight: 700,
+        fontSize: "clamp(2.8rem, 6.5vw, 5rem)",
+        lineHeight: 1.05,
+        letterSpacing: "-0.03em",
+        color: "#ffffff",
+      }}
+    >
+      Your Business on{" "}
+      <span style={{ color: "#37b24d" }}>Autopilot.</span>
+    </motion.h1>
+
+    <motion.p
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      transition={{ delay: 0.3, duration: 0.8 }}
+      style={{
+        fontFamily: "'Poppins',sans-serif",
+        fontWeight: 300,
+        fontSize: "clamp(0.95rem, 1.8vw, 1.1rem)",
+        lineHeight: 1.7,
+        color: "rgba(255,255,255,0.65)",
+        maxWidth: "480px",
+      }}
+
+    >
+      AI that answers, qualifies, and closes on WhatsApp — while you sleep.
+    </motion.p>
+
+    <motion.div
+      initial={{ opacity: 0, y: 16 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ delay: 0.45, duration: 0.6 }}
+      className="flex flex-wrap items-center gap-4 mt-1"
+    >
+      <motion.a
+        href="/signIn"
+        target="_blank"
+        rel="noopener noreferrer"
+        whileHover={{ scale: 1.04, boxShadow: "0 0 40px rgba(55,178,77,0.4)" }}
+        whileTap={{ scale: 0.96 }}
+        className="inline-flex items-center gap-3 px-7 py-4 rounded-2xl text-white font-semibold shadow-lg"
+        style={{ background: "#37b24d", fontFamily: "'Poppins',sans-serif", fontSize: "1rem" }}
+      >
+                  <Link
+  to="/signin?redirect=/onboarding"
+  onClick={() => setOpen(false)}
+  className="..."
+>
+  Get Started Free
+</Link>
+      </motion.a>
+
+      <a
+      href="https://wa.me/2348121676394"
+      target="_blank"
+      rel="noopener noreferrer"
+      className="inline-flex items-center gap-2 border border-gray-200 text-[#fff] px-6 py-3 rounded-2xl font-semibold hover:border-[#37b24d] hover:text-[#37b24d] transition-all"
+      style={{ fontFamily: "'Inter', sans-serif" }}
+    >
+      Talk to Us
+    </a>
+    </motion.div>
+  </div>
+
+  <motion.div
+    initial={{ opacity: 0 }}
+    animate={{ opacity: 1 }}
+    transition={{ delay: 0.7 }}
+    className="flex-1 flex items-end justify-end mt-10  "
+  >
+    {[
+      { icon: "🏢", label: "50+ Nigerian businesses" },
+      { icon: "⚡", label: "Live in 48 hours" },
+      { icon: "🔒", label: "100% private & secure" },
+    ].map((b) => (
+      <div
+        key={b.label}
+        className="flex items-center gap-2"
+        style={{ color: "rgba(255,255,255,0.40)", fontFamily: "'Poppins',sans-serif", fontSize: "0.78rem" }}
+      >
+        <span>{b.icon}</span>
+        <span>{b.label}</span>
+      </div>
+    ))}
+  </motion.div>
+</div>
+
         <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ delay: 0.8 }}
-          className="grid grid-cols-3 gap-6 w-full max-w-[600px] mt-12 pt-12 border-t border-white/5"
+          className="flex-1 relative hidden lg:flex items-end justify-end pb-4 md:mt-16"
+          style={{ minHeight: "400px" }}
+          animate={{ y: [0, -8, 0] }}
+          transition={{ duration: 5, repeat: Infinity, ease: "easeInOut" }}
         >
-          {stats.map((s) => (
-            <div key={s.label} className="flex flex-col gap-1">
-              <span className="text-white text-2xl md:text-3xl font-bold tracking-tight">{s.value}</span>
-              <span className="text-[#666] text-xs md:text-sm uppercase tracking-widest">{s.label}</span>
-            </div>
-          ))}
-        </motion.div>
+          <div className="absolute bottom-0 right-0 w-full max-w-sm flex flex-col items-end gap-3">
+            <AnimatePresence>
+              {conversation.map((msg) => (
+                <motion.div
+                  key={msg.id}
+                  initial={{ opacity: 0, y: 20, scale: 0.9 }}
+                  animate={{ opacity: 1, y: 0, scale: 1 }}
+                  exit={{ opacity: 0, scale: 0.8 }}
+                  transition={{ duration: 0.3, type: "spring" }}
+                  className={`rounded-2xl px-4 py-3 shadow-xl max-w-[260px] ${
+                    msg.type === "user"
+                      ? "rounded-br-sm bg-white self-end"
+                      : "rounded-bl-sm bg-[#37b24d] self-start"
+                  }`}
+                >
+                  {msg.type === "user" && (
+                    <div className="flex items-center gap-2 mb-1.5">
+                      <div
+                        className="w-5 h-5 rounded-full flex items-center justify-center text-xs font-bold flex-shrink-0"
+                        style={{ background: "#1a1a2e", color: "#fff" }}
+                      >
+                        C
+                      </div>
+                      <span className="text-xs" style={{ color: "#9ca3af" }}>
+                        Chidi O.
+                      </span>
+                    </div>
+                  )}
+                  <p
+                    className="text-sm font-medium leading-snug"
+                    style={{
+                      color: msg.type === "user" ? "#1a1a2e" : "#ffffff",
+                      fontFamily: "'Poppins',sans-serif",
+                    }}
+                  >
+                    {msg.text}
+                  </p>
+                  {msg.type === "bot" && (
+                    <p
+                      className="text-xs mt-1.5 text-right"
+                      style={{ color: "rgba(255,255,255,0.60)" }}
+                    >
+                      AutomateNG · just now ✓✓
+                    </p>
+                  )}
+                </motion.div>
+              ))}
+            </AnimatePresence>
 
+            {isTyping && (
+              <motion.div
+                initial={{ opacity: 0, scale: 0.9 }}
+                animate={{ opacity: 1, scale: 1 }}
+                exit={{ opacity: 0 }}
+                className="rounded-2xl rounded-bl-sm px-4 py-3 shadow-xl bg-[#37b24d] self-start max-w-[100px]"
+              >
+                <div className="flex gap-1">
+                  {[0, 1, 2].map((i) => (
+                    <motion.span
+                      key={i}
+                      className="w-2 h-2 rounded-full bg-white"
+                      animate={{ y: [0, -4, 0] }}
+                      transition={{
+                        duration: 0.6,
+                        repeat: Infinity,
+                        delay: i * 0.15,
+                      }}
+                    />
+                  ))}
+                </div>
+              </motion.div>
+            )}
+          </div>
+
+          <motion.div
+            initial={{ opacity: 0, y: -8 }}
+            animate={{
+              opacity: [0.8, 1, 0.8],
+              scale: [1, 1.04, 1],
+              y: 0,
+            }}
+            transition={{ delay: 1.65, duration: 2, repeat: Infinity }}
+            className="absolute flex items-center gap-2 px-3 py-1.5 rounded-full"
+            style={{
+              top: "6%",
+              right: "6%",
+              background: "rgba(255,255,255,0.10)",
+              border: "1px solid rgba(255,255,255,0.18)",
+              backdropFilter: "blur(8px)",
+              zIndex: 21,
+            }}
+          >
+            <span className="w-1.5 h-1.5 rounded-full bg-[#37b24d] animate-pulse" />
+            <span className="text-xs font-medium text-white" style={{ fontFamily: "'Poppins',sans-serif" }}>
+              Replied in &lt;2 seconds
+            </span>
+          </motion.div>
+        </motion.div>
       </div>
     </section>
   );
