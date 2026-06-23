@@ -4,10 +4,24 @@ import { Menu, X, ChevronDown, LogOut, Settings, CreditCard, User } from "lucide
 import { useNavigate, useLocation, Link } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext";
 
-const publicNavConfig = [
-  { label: "Features", type: "link" as const, href: "/#Howitworks" },
-  { label: "Pricing", type: "link" as const, href: "/pricing" },
-  { label: "About", type: "link" as const, href: "/about-us" },
+const publicNavConfig: (
+  | { label: string; type: "link"; href: string }
+  | { label: string; type: "dropdown"; links: { label: string; href: string }[] }
+)[] = [
+  {
+    label: "Products",
+    type: "dropdown",
+    links: [
+      { label: "Instagram Automation", href: "/product/instagram" },
+      { label: "WhatsApp Automation", href: "/product/whatsapp" },
+      { label: "Messenger Automation", href: "/product/messenger" },
+      { label: "TikTok Automation", href: "/product/tiktok" },
+      { label: "AI Engine", href: "/product/ai" },
+    ],
+  },
+  { label: "Features", type: "link", href: "/#Howitworks" },
+  { label: "Pricing", type: "link", href: "/pricing" },
+  { label: "About", type: "link", href: "/about-us" },
 ];
 
 const loggedInNavConfig = [
@@ -322,16 +336,36 @@ export function Navbar() {
                 </div>
               )}
 
-              {navItems.map((item) => (
-                <button
-                  key={item.label}
-                  onClick={() => go(item.href!)}
-                  className="text-left text-[#1a1a2e] font-semibold text-sm"
-                  style={{ fontFamily: "'Inter', sans-serif" }}
-                >
-                  {item.label}
-                </button>
-              ))}
+              {navItems.map((item) =>
+                item.type === "dropdown" ? (
+                  <div key={item.label}>
+                    <p className="text-[#9ca3af] text-xs font-semibold uppercase tracking-widest mb-2" style={{ fontFamily: "'Inter', sans-serif" }}>
+                      {item.label}
+                    </p>
+                    <div className="flex flex-col gap-1 ml-2 mb-3">
+                      {item.links.map((link) => (
+                        <button
+                          key={link.label}
+                          onClick={() => go(link.href)}
+                          className="text-left text-[#4b5563] text-sm hover:text-[#37b24d] transition-colors"
+                          style={{ fontFamily: "'Inter', sans-serif" }}
+                        >
+                          {link.label}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+                ) : (
+                  <button
+                    key={item.label}
+                    onClick={() => go(item.href!)}
+                    className="text-left text-[#1a1a2e] font-semibold text-sm"
+                    style={{ fontFamily: "'Inter', sans-serif" }}
+                  >
+                    {item.label}
+                  </button>
+                )
+              )}
 
               {isLoggedIn ? (
                 <button
