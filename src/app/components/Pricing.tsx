@@ -204,7 +204,7 @@ export function Pricing() {
     }
   };
 
-  const currentPlan = subscription?.plan || "free";
+const currentPlan = user ? (subscription?.plan || "free") : null;
 
   return (
     <section id="pricing" className="relative bg-gray-50 py-[112px] px-5 overflow-hidden">
@@ -250,7 +250,7 @@ export function Pricing() {
           {plans.map((plan, i) => {
             const price = annual ? plan.annualPrice : plan.monthlyPrice;
             const label = annual ? plan.annualLabel : plan.monthlyLabel;
-            const isCurrentPlan = currentPlan === plan.name.toLowerCase();
+const isCurrentPlan = currentPlan !== null && currentPlan === plan.name.toLowerCase();
             const isLoading = loadingPlan === plan.name;
 
             return (
@@ -282,7 +282,7 @@ export function Pricing() {
                 <div className="relative z-10 p-5 flex flex-col gap-4 flex-1">
                   <div className="flex items-center justify-between">
                     <span style={{ fontFamily: "'Syne', sans-serif", fontWeight: 600, fontSize: "1rem", color: plan.highlight ? "#37b24d" : "#6b7280" }}>
-                      {isCurrentPlan ? `${plan.name} (Current)` : plan.name}
+                        {isCurrentPlan ? `${plan.name} (Current)` : plan.name}
                     </span>
                     {plan.tag && (
                       <span
@@ -357,7 +357,7 @@ export function Pricing() {
                   >
                     {plan.highlight && <span className="absolute inset-0 rounded-[12px] border-t border-[#69db7c] pointer-events-none" />}
                     {isLoading ? <Loader2 size={16} className="animate-spin" /> : null}
-                    {isCurrentPlan ? "Current Plan" : plan.cta}
+                    {isCurrentPlan ? "Current Plan" : (user ? plan.cta : "Get started")}
                   </motion.button>
                 </div>
               </motion.article>

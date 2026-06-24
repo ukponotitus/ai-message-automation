@@ -19,7 +19,27 @@ const publicNavConfig: (
       { label: "AI Engine", href: "/product/ai" },
     ],
   },
-  { label: "Features", type: "link", href: "/#Howitworks" },
+  {
+    label: "Solutions",
+    type: "dropdown",
+    links: [
+      { label: "For Creators", href: "/solutions/creators" },
+      { label: "For eCommerce", href: "/solutions/ecommerce" },
+      { label: "For Agencies", href: "/solutions/agencies" },
+      { label: "Lead Generation", href: "/solutions/lead-gen" },
+      { label: "Customer Support", href: "/solutions/support" },
+      { label: "Broadcasts", href: "/solutions/broadcasts" },
+    ],
+  },
+  {
+    label: "Resources",
+    type: "dropdown",
+    links: [
+      { label: "How It Works", href: "/#Howitworks" },
+      { label: "Help Center", href: "https://help.automateNGB.com" },
+      { label: "Community", href: "https://community.automateNG.com/" },
+    ],
+  },
   { label: "Pricing", type: "link", href: "/pricing" },
   { label: "About", type: "link", href: "/about-us" },
 ];

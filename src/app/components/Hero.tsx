@@ -293,29 +293,6 @@ export function Hero() {
             )}
           </div>
 
-          <motion.div
-            initial={{ opacity: 0, y: -8 }}
-            animate={{
-              opacity: [0.8, 1, 0.8],
-              scale: [1, 1.04, 1],
-              y: 0,
-            }}
-            transition={{ delay: 1.65, duration: 2, repeat: Infinity }}
-            className="absolute flex items-center gap-2 px-3 py-1.5 rounded-full"
-            style={{
-              top: "6%",
-              right: "6%",
-              background: "rgba(255,255,255,0.10)",
-              border: "1px solid rgba(255,255,255,0.18)",
-              backdropFilter: "blur(8px)",
-              zIndex: 21,
-            }}
-          >
-            <span className="w-1.5 h-1.5 rounded-full bg-[#37b24d] animate-pulse" />
-            <span className="text-xs font-medium text-white" style={{ fontFamily: "'Poppins',sans-serif" }}>
-              Replied in &lt;2 seconds
-            </span>
-          </motion.div>
         </motion.div>
       </div>
     </section>
