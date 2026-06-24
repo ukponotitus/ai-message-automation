@@ -1,5 +1,5 @@
-const BASE_URL = import.meta.env.VITE_API_URL ||  "https://ai-message-be-service.vercel.app";
-
+const BASE_URL = import.meta.env.VITE_API_URL; 
+ 
 class ApiError extends Error {
   status: number;
   constructor(message: string, status: number) {
@@ -8,10 +8,11 @@ class ApiError extends Error {
   }
 }
 
-async function request<T>(
-  endpoint: string,
-  options: RequestInit = {}
-): Promise<T> {
+async function request<T>(endpoint: string, options: RequestInit = {}): Promise<T> {
+ if (!BASE_URL) {
+      throw new Error("VITE_API_URL is not defined! Check Netlify settings.");
+  }
+  
   const token = localStorage.getItem("access_token");
   const cleanBase = BASE_URL.replace(/\/+$/, "");
   const cleanEndpoint = endpoint.startsWith("/") ? endpoint : `/${endpoint}`;
