@@ -46,7 +46,6 @@ const publicNavConfig: (
 
 const loggedInNavConfig = [
   { label: "Dashboard", type: "link" as const, href: "/dashboard" },
-  { label: "My AI Assistant", type: "link" as const, href: "/dashboard/ai-assistant" },
   { label: "Billing", type: "link" as const, href: "/dashboard/billing" },
 ];
 
